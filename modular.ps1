@@ -44,6 +44,11 @@ $form.FormBorderStyle = [System.Windows.Forms.FormBorderStyle]::FixedDialog
 $form.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen
 $form.Size = New-Object System.Drawing.Size(400, 400)
 
+$form.Add_FormClosed({
+    [System.Windows.Forms.Application]::Exit()
+    Stop-Process -Id $PID
+})
+
 $PTXVerGroup = New-Object System.Windows.Forms.GroupBox
 $PTXVerGroup.Text = "PTX Version"
 $PTXVerGroup.Location = New-Object System.Drawing.Point(15,5)
@@ -240,7 +245,7 @@ $submitButton.Add_Click({
         Add-Content -Path "commands.sh" -Value "$sudoPrefix sync_etc"
        
     }
-    [void]$form.Close()
+    [void]$form.Hide()
 })
 
 $PTXVerGroup.Controls.Add($PTX7RB)
