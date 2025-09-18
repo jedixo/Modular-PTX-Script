@@ -29,7 +29,7 @@ if (Test-path "commands.sh") {
 }
 
 Clear-Host
-write-host -foregroundcolor Yellow "Modular PTX Network Configuration Utility"
+write-host -foregroundcolor Cyan "Modular PTX Network Configuration Utility"
 write-host -foregroundcolor Cyan "Written By: Jake Dixon"
 
 Add-Type -AssemblyName System.Windows.Forms
@@ -183,11 +183,6 @@ $submitButton.Location = New-Object System.Drawing.Point(15, 332)
 
 $SYSTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 
-$form.Add_FormClosed({
-    #[void]$form.Close()
- 
-}
-)
 
 $submitButton.Add_Click({
     $TimeZone = $TimeZoneTB.Text
@@ -197,40 +192,45 @@ $submitButton.Add_Click({
     $MTU = $MTUTB.Text
     $NTPServer = $NTPServerTB.Text
     $PTXhostname = $HostnameTB.Text
-    Add-Content -Path "commands.sh" -Value "sudo nmcli general hostname $PTXhostname"
+    $sudoPrefix = "sudo"
+    if ($ModularUNTB.Text -eq "root"){
+        write-host -foregroundcolor Magenta "Using Root User."
+        $sudoPrefix = ""
+    }
+    Add-Content -Path "commands.sh" -Value "$sudoPrefix nmcli general hostname $PTXhostname"
     if ($PTX7RB.Checked) {
-        Add-Content -Path "commands.sh" -Value "sudo ptxapp -z $TimeZone"
-        Add-Content -Path "commands.sh" -Value "sudo nmcli connection modify eth0 ipv4.addresses $PTXTagetIP$PTXTargetMask"
-        Add-Content -Path "commands.sh" -Value "sudo nmcli connection modify eth0 ipv4.gateway $Gateway"
-        Add-Content -Path "commands.sh" -Value "sudo nmcli connection modify eth0 802-3-ethernet.mtu $MTU"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix ptxapp -z $TimeZone"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix nmcli connection modify eth0 ipv4.addresses $PTXTagetIP$PTXTargetMask"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix nmcli connection modify eth0 ipv4.gateway $Gateway"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix nmcli connection modify eth0 802-3-ethernet.mtu $MTU"
         Add-Content -Path "commands.sh" -Value "> /media/realroot/home/mms/.config/ntp/ntp.conf"
         Add-Content -Path "commands.sh" -Value "echo `"driftfile /var/lib/ntp/drift`" >> /media/realroot/home/mms/.config/ntp/ntp.conf"
         Add-Content -Path "commands.sh" -Value "echo `"server $NTPServer`" >> /media/realroot/home/mms/.config/ntp/ntp.conf"
         Add-Content -Path "commands.sh" -Value "echo `"restrict default nomodify nopeer noquery notrap`" >> /media/realroot/home/mms/.config/ntp/ntp.conf"
         if ($SyncToPCCB.Checked) {
-            Add-Content -Path "commands.sh" -Value "sudo timedatectl set-ntp false"
-            Add-Content -Path "commands.sh" -Value "sudo timedatectl set-time `"$SYSTime`""
-            Add-Content -Path "commands.sh" -Value "sudo timedatectl set-ntp true"
+            Add-Content -Path "commands.sh" -Value "$sudoPrefix timedatectl set-ntp false"
+            Add-Content -Path "commands.sh" -Value "$sudoPrefix timedatectl set-time `"$SYSTime`""
+            Add-Content -Path "commands.sh" -Value "$sudoPrefix timedatectl set-ntp true"
         }
-        Add-Content -Path "commands.sh" -Value "sudo hwclock -w"
-        Add-Content -Path "commands.sh" -Value "sudo sync_config.sh"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix hwclock -w"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix sync_config.sh"
         
     } elseif ($PTXCRB.Checked) {
-        Add-Content -Path "commands.sh" -Value "sudo ptxapp -Z $TimeZone"
-        Add-Content -Path "commands.sh" -Value "sudo nmcli connection modify eth0 ipv4.addresses $PTXTagetIP$PTXTargetMask"
-        Add-Content -Path "commands.sh" -Value "sudo nmcli connection modify eth0 ipv4.gateway $Gateway"
-        Add-Content -Path "commands.sh" -Value "sudo nmcli connection modify eth0 802-3-ethernet.mtu $MTU"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix ptxapp -Z $TimeZone"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix nmcli connection modify eth0 ipv4.addresses $PTXTagetIP$PTXTargetMask"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix nmcli connection modify eth0 ipv4.gateway $Gateway"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix nmcli connection modify eth0 802-3-ethernet.mtu $MTU"
         Add-Content -Path "commands.sh" -Value "> /media/realroot/home/mms/.config/ntp/ntp.conf"
         Add-Content -Path "commands.sh" -Value "echo `"driftfile /var/lib/ntp/drift`" >> /media/realroot/home/mms/.config/ntp/ntp.conf"
         Add-Content -Path "commands.sh" -Value "echo `"server $NTPServer`" >> /media/realroot/home/mms/.config/ntp/ntp.conf"
         Add-Content -Path "commands.sh" -Value "echo `"restrict default nomodify nopeer noquery notrap`" >> /media/realroot/home/mms/.config/ntp/ntp.conf"
         if ($SyncToPCCB.Checked) {
-            Add-Content -Path "commands.sh" -Value "sudo timedatectl set-ntp false"
-            Add-Content -Path "commands.sh" -Value "sudo timedatectl set-time `"$SYSTime`""
-            Add-Content -Path "commands.sh" -Value "sudo timedatectl set-ntp true"
+            Add-Content -Path "commands.sh" -Value "$sudoPrefix timedatectl set-ntp false"
+            Add-Content -Path "commands.sh" -Value "$sudoPrefix timedatectl set-time `"$SYSTime`""
+            Add-Content -Path "commands.sh" -Value "$sudoPrefix timedatectl set-ntp true"
         }
-        Add-Content -Path "commands.sh" -Value "sudo hwclock -w"
-        Add-Content -Path "commands.sh" -Value "sudo sync_etc"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix hwclock -w"
+        Add-Content -Path "commands.sh" -Value "$sudoPrefix sync_etc"
        
     }
     [void]$form.Close()
@@ -267,7 +267,7 @@ $form.Controls.Add($PLinkLBL)
 
 $form.Add_Shown({ $form.Activate() })
 [void]$form.ShowDialog()
-Add-Content -Path "commands.sh" -Value "sudo reboot"
+Add-Content -Path "commands.sh" -Value "$sudoPrefix reboot"
 $PLinkPath = $PLinkTB.Text
 $ModularUN = $ModularUNTB.Text
 $InitialIP = $InitialIPTB.Text
