@@ -13,11 +13,14 @@
 #    17/09/2025
 #      - Integrated all options into one dialog
 #      - Added additional configurable options with Dawson Mine Defaults
+#    18/09/2025
+#      - Added handling of root user
 
 # Default Variables
 $MTU            = 1400
 $PTXTargetMask  = "/22"
 $InitialIP      = "192.168.0.111"
+$NetworkFirstTwoOctets = "10.48."
 $TimeZone       = "Australia/Brisbane"
 $Gateway        = "10.48.108.1"
 $NTPServer      = "10.61.126.153"
@@ -89,7 +92,7 @@ $NetworkGroup.AutoSizeMode = [System.Windows.Forms.AutoSizeMode]::GrowAndShrink
 
 $TargetIPTB = New-Object System.Windows.Forms.TextBox
 $TargetIPTB.AcceptsReturn = $false
-$TargetIPTB.Text = "10.48.108."
+$TargetIPTB.Text = $NetworkFirstTwoOctets
 $TargetIPTB.AcceptsTab = $false
 $TargetIPTB.Multiline = $False
 $TargetIPTB.Location = New-Object System.Drawing.Point(110, 20)
