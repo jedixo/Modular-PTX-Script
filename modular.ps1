@@ -166,9 +166,13 @@ $NTPServerLBL.Text = "NTP Server:"
 $NTPServerLBL.Location = New-Object System.Drawing.Point(178, 22)
 
 $SyncToPCCB = New-Object System.Windows.Forms.CheckBox
-$SyncToPCCB.Text = "Sync With PC"
+$SyncToPCCB.Text = "Sync Time With"
 $SyncToPCCB.Checked = $true
 $SyncToPCCB.Location = New-Object System.Drawing.Point(10, 50)
+$SyncToPCCB2 = New-Object System.Windows.Forms.Label
+$SyncToPCCB2.Text = "PC Clock."
+$SyncToPCCB2.Location = New-Object System.Drawing.Point(107, 55)
+
 
 $PLinkTB = New-Object System.Windows.Forms.TextBox
 $PLinkTB.AcceptsReturn = $false
@@ -259,6 +263,7 @@ $TimeGroup.Controls.Add($TimeZoneTB)
 $TimeGroup.Controls.Add($TimeZoneLBL)
 $TimeGroup.Controls.Add($NTPServerTB)
 $TimeGroup.Controls.Add($NTPServerLBL)
+$TimeGroup.Controls.Add($SyncToPCCB2)
 $TimeGroup.Controls.Add($SyncToPCCB)
 $form.Controls.Add($PTXVerGroup)
 $form.Controls.Add($ConnectionGroup)
