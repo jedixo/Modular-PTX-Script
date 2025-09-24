@@ -26,6 +26,7 @@ $Gateway        = "10.48.108.1"
 $NTPServer      = "10.61.126.153"
 $ModularUN      = "mms"
 $PLinkPath      = "./plink.exe"
+$sudoPrefix     = "sudo"
 
 if (Test-path "commands.sh") {
     Remove-Item "commands.sh" -Force
@@ -34,6 +35,8 @@ if (Test-path "commands.sh") {
 Clear-Host
 write-host -foregroundcolor Cyan "Modular PTX Network Configuration Utility"
 write-host -foregroundcolor Cyan "Written By: Jake Dixon"
+Write-Host ""
+write-host -foregroundcolor Yellow "INFO: Gathering Paramaters from the User."
 
 Add-Type -AssemblyName System.Windows.Forms
 $form = New-Object System.Windows.Forms.Form
@@ -45,6 +48,7 @@ $form.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen
 $form.Size = New-Object System.Drawing.Size(400, 400)
 
 $form.Add_FormClosed({
+    write-host -foregroundcolor Red "ERROR: Operating Aborted."
     [System.Windows.Forms.Application]::Exit()
     Stop-Process -Id $PID
 })
@@ -190,7 +194,7 @@ $PLinkLBL.Text = "Plink Path:"
 $PLinkLBL.Location = New-Object System.Drawing.Point(190, 335)
 
 $submitButton = New-Object System.Windows.Forms.Button
-$submitButton.Text = "OK"
+$submitButton.Text = "Program"
 $submitButton.Location = New-Object System.Drawing.Point(15, 332)
 
 $SYSTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -204,9 +208,8 @@ $submitButton.Add_Click({
     $MTU = $MTUTB.Text
     $NTPServer = $NTPServerTB.Text
     $PTXhostname = $HostnameTB.Text
-    $sudoPrefix = "sudo"
     if ($ModularUNTB.Text -eq "root"){
-        write-host -foregroundcolor Magenta "Using Root User."
+        write-host -foregroundcolor Yellow "Using Root User."
         $sudoPrefix = ""
     }
     Add-Content -Path "commands.sh" -Value "$sudoPrefix nmcli general hostname $PTXhostname"
@@ -280,11 +283,12 @@ $form.Controls.Add($PLinkLBL)
 
 $form.Add_Shown({ $form.Activate() })
 [void]$form.ShowDialog()
-Add-Content -Path "commands.sh" -Value "$sudoPrefix reboot"
 $PLinkPath = $PLinkTB.Text
 $ModularUN = $ModularUNTB.Text
 $InitialIP = $InitialIPTB.Text
+write-host -foregroundcolor Yellow "INFO: Initiating Connection to PTX Screen. You may be prompted to accept "
+Add-Content -Path "commands.sh" -Value "$sudoPrefix reboot"
 $command = "$PLinkPath -ssh -l $ModularUN -m commands.sh $InitialIP"
 Invoke-Expression $command
-# stop and review output
+write-host -foregroundcolor Yellow "INFO: Configuration Attempted. Please review SSH Output Above."
 pause
