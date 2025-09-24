@@ -286,7 +286,7 @@ $form.Add_Shown({ $form.Activate() })
 $PLinkPath = $PLinkTB.Text
 $ModularUN = $ModularUNTB.Text
 $InitialIP = $InitialIPTB.Text
-write-host -foregroundcolor Yellow "INFO: Initiating Connection to PTX Screen. You may be prompted to accept "
+write-host -foregroundcolor Yellow "INFO: Initiating Connection to PTX Screen. You may be prompted to accept Fingerprint Certificate."
 Add-Content -Path "commands.sh" -Value "$sudoPrefix reboot"
 $command = "$PLinkPath -ssh -l $ModularUN -m commands.sh $InitialIP"
 Invoke-Expression $command
