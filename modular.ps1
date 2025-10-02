@@ -55,6 +55,7 @@ write-host -foregroundcolor Cyan "Written By: Jake Dixon"
 Write-Host ""
 
 Add-Type -AssemblyName System.Windows.Forms
+[System.Windows.Forms.Application]::EnableVisualStyles()
 $form = New-Object System.Windows.Forms.Form
 $form.MaximizeBox = $false
 $form.MinimizeBox = $false
