@@ -16,6 +16,23 @@
 #    18/09/2025
 #      - Added handling of root user
 
+# add a helper
+Add-Type -Name Window -Namespace Console -MemberDefinition '
+    [DllImport("Kernel32.dll")]
+    public static extern IntPtr GetConsoleWindow();
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, Int32 nCmdShow);
+'
+function Hide-Console {
+    $consolePtr = [Console.Window]::GetConsoleWindow()
+    [void][Console.Window]::ShowWindow($consolePtr, 0)
+}
+function Show-Console {
+    $consolePtr = [Console.Window]::GetConsoleWindow()
+    [void][Console.Window]::ShowWindow($consolePtr, 5)
+}
+Hide-Console
+
 # Default Variables
 $MTU            = 1400
 $PTXTargetMask  = "/22"
@@ -36,7 +53,6 @@ Clear-Host
 write-host -foregroundcolor Cyan "Modular PTX Network Configuration Utility"
 write-host -foregroundcolor Cyan "Written By: Jake Dixon"
 Write-Host ""
-write-host -foregroundcolor Yellow "INFO: Gathering Paramaters from the User."
 
 Add-Type -AssemblyName System.Windows.Forms
 $form = New-Object System.Windows.Forms.Form
@@ -286,6 +302,7 @@ $form.Add_Shown({ $form.Activate() })
 $PLinkPath = $PLinkTB.Text
 $ModularUN = $ModularUNTB.Text
 $InitialIP = $InitialIPTB.Text
+Show-Console
 write-host -foregroundcolor Yellow "INFO: Initiating Connection to PTX Screen. You may be prompted to accept Fingerprint Certificate."
 Add-Content -Path "commands.sh" -Value "$sudoPrefix reboot"
 $command = "$PLinkPath -ssh -l $ModularUN -m commands.sh $InitialIP"
